@@ -1,0 +1,38 @@
+{% extends "partials/base.html" %}
+{% block title %}Manage Statuses{% endblock %}
+{% block content %}
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Manage Task Statuses</h2>
+        <p class="text-muted">Add, view, and organize your workspace statuses 🚀</p>
+    </div>
+
+    <div class="shadow-sm mb-4 border-0 rounded-4">
+        <div class="card-body p-4">
+            <form method="POST" class="d-flex gap-2">
+                {{ form.hidden_tag() }}
+                {{ form.name(class="form-control", placeholder="Status name") }}
+                {{ form.submit(class="btn btn-primary btn-lg", value=edit and "Update" or "Add") }}
+            </form>
+        </div>
+    </div>
+
+    <ul class="list-group">
+        {% for status in statuses %}
+        <li class="list-group-item d-flex justify-content-between align-items-center mb-2 shadow-sm rounded-3">
+            {{ status.name }}
+            <div>
+                <a href="{{ url_for('status.manage_statuses', workspace_id=workspace.id, edit_id=status.id) }}"
+                   class="btn btn-warning me-1"><i class="fa-solid fa-gear"></i></a>
+                <a href="{{ url_for('status.delete_status', status_id=status.id) }}"
+                   class="btn btn-danger"><i class="fa-solid fa-delete-left"></i></a>
+            </div>
+        </li>
+        {% else %}
+        <li class="list-group-item text-center text-muted">No statuses yet. Create one above!</li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

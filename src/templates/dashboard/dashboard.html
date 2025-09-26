@@ -1,0 +1,116 @@
+{% extends "partials/base.html" %}
+{% block title %}My Workspaces{% endblock %}
+{% block content %}
+
+<div class="container mt-5 p-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">✨ My Workspaces</h2>
+        <div style="width: fit-content; display: flex; gap: 5px; align-items: center;">
+            <i class="fa-solid fa-magnifying-glass"
+               style="color: blue; border: 2px solid blue; padding: 6px; border-radius: 50%;"></i>
+            <input type="text" id="workspaceSearch" class="form-control" placeholder="Search workspaces..."
+                   style="width: 350px;">
+        </div>
+    </div>
+
+    {% if workspaces %}
+    <a href="{{ url_for('workspace.create') }}" class="btn btn-primary"
+       style="position: fixed; bottom: 20px; right: 20px; z-index: 20">
+        + Create Workspace
+    </a>
+
+    <div class="row g-4" id="workspaceList">
+        {% for ws in workspaces %}
+        <div class="col-md-6 col-lg-4 workspace-item">
+            <div class="card h-100 shadow-sm border-0 rounded-3 workspace-card hover-shadow position-relative"
+                 style="--workspace-color: {{ ws.color|default('#0d6efd') }};">
+
+                <a href="{{ url_for('workspace.view', workspace_id=ws.id) }}" class="text-decoration-none text-dark">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="rounded-circle text-white d-flex justify-content-center align-items-center"
+                                 style="width:40px; height:40px; font-weight:600; background-color: var(--workspace-color);">
+                                {{ ws.name[0]|upper }}
+                            </div>
+                            <h5 class="ms-3 mb-0 workspace-name">{{ ws.name }}</h5>
+                        </div>
+                        <p class="text-muted small mb-0">Click to open workspace</p>
+                    </div>
+                </a>
+
+                {% if workspace_roles[ws.id] == "admin" %}
+                <div class="workspace-actions">
+                    <a href="{{ url_for('workspace.edit', workspace_id=ws.id) }}" class="btn btn-warning btn-sm">
+                        <i class="fa-solid fa-gear"></i>
+                    </a>
+                    <a href="{{ url_for('workspace.delete', workspace_id=ws.id) }}" class="btn btn-sm btn-danger">
+                        <i class="fa-solid fa-delete-left"></i>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="text-center p-5 border rounded-3 shadow-sm">
+        <p class="mb-3 text-muted">You don’t have any workspaces yet.</p>
+        <a href="{{ url_for('workspace.create') }}" class="btn btn-primary btn-lg shadow-sm">
+            + Create Workspace
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .workspace-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        overflow: hidden;
+    }
+
+    .workspace-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    .workspace-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 120%;
+        height: 8px;
+        background-color: var(--workspace-color);
+        transform: rotate(-2deg);
+        transform-origin: left top;
+    }
+
+    .workspace-actions {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        display: flex;
+        gap: 5px;
+    }
+
+    .workspace-card:hover .workspace-actions {
+        opacity: 1;
+    }
+</style>
+
+<script>
+    document.getElementById("workspaceSearch").addEventListener("keyup", function() {
+        let filter = this.value.toLowerCase();
+        let items = document.querySelectorAll("#workspaceList .workspace-item");
+
+        items.forEach(item => {
+            let name = item.querySelector(".workspace-name").textContent.toLowerCase();
+            item.style.display = name.includes(filter) ? "" : "none";
+        });
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "partials/base.html" %}
+{% block title %}About Us{% endblock %}
+{% block content %}
+
+<header class="hero bg-primary text-white py-5">
+    <div class="container text-center">
+        <h1>About TaskFlow</h1>
+        <p class="lead">Learn who we are, what we do, and why we’re passionate about productivity.</p>
+    </div>
+</header>
+
+<section class="py-5 scroll-reveal">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h2 class="fw-bold">Our Mission</h2>
+                <p class="text-muted">
+                    TaskFlow was created to help teams and individuals organize their work effortlessly.
+                    Our mission is to simplify project management while keeping it powerful and flexible.
+                </p>
+            </div>
+            <div class="col-md-6">
+                <img src="https://www.clipartmax.com/png/full/116-1162533_our-mission-icon-png.png"
+                     class="img-fluid rounded" alt="Mission">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-gradient" style="background: linear-gradient(120deg, #f0f4ff, #d9e4ff);">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-5">Our Values</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded shadow-sm hover-shadow">
+                    <i class="bi bi-lightning-fill fs-1 text-primary mb-3"></i>
+                    <h4 class="fw-bold">Innovation</h4>
+                    <p class="text-muted">We continuously improve and innovate to make project management easier.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded shadow-sm hover-shadow">
+                    <i class="bi bi-people-fill fs-1 text-success mb-3"></i>
+                    <h4 class="fw-bold">Collaboration</h4>
+                    <p class="text-muted">Teamwork and communication are at the heart of everything we build.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded shadow-sm hover-shadow">
+                    <i class="bi bi-shield-lock-fill fs-1 text-warning mb-3"></i>
+                    <h4 class="fw-bold">Trust & Security</h4>
+                    <p class="text-muted">We prioritize the security and privacy of our users at all times.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

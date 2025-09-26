@@ -1,0 +1,25 @@
+{% extends "partials/base.html" %}
+{% block title %}Invite Users{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="shadow-lg border-0 rounded-4" style="max-width: 500px; width: 100%;">
+        <div class="card-body p-4">
+            <h2 class="text-center mb-4 text-primary">
+                Invite User to <span class="fw-bold">{{ workspace.name }}</span>
+            </h2>
+
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.email.label(class="form-label fw-semibold") }}
+                    {{ form.email(class="form-control form-control-lg rounded-3", placeholder="user@example.com") }}
+                </div>
+                <div class="d-grid">
+                    {{ form.submit(class="btn btn-primary btn-lg rounded-3 shadow-sm") }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

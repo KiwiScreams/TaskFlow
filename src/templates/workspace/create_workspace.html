@@ -1,0 +1,54 @@
+{% extends "partials/base.html" %}
+{% block title %}Create Workspace{% endblock %}
+{% block content %}
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="shadow-lg border-0 rounded-4 w-100" style="max-width: 500px;">
+        <div class="card-body p-5">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold">Create a New Workspace</h2>
+                <p class="text-muted">Organize your tasks inside a workspace 🚀</p>
+            </div>
+
+            {% for errors in form.errors.values() %}
+            {% for error in errors %}
+            <div class="alert alert-danger py-2">{{ error }}</div>
+            {% endfor %}
+            {% endfor %}
+
+            <form method="POST">
+                {{ form.hidden_tag() }}
+
+                <div class="form-floating mb-3">
+                    {{ form.name }}
+                    <label>Workspace Name</label>
+                </div>
+
+
+                <div class="form-floating mb-3">
+                    {{ form.color }}
+                    <label>Workspace Color</label>
+                </div>
+                <div class="d-grid">
+                    {{ form.submit }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-gradient {
+        background: linear-gradient(135deg, #007bff, #00c6ff);
+        color: white;
+        border: none;
+        transition: all 0.3s ease-in-out;
+    }
+    .btn-gradient:hover {
+        background: linear-gradient(135deg, #0069d9, #00a2d3);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 123, 255, 0.3);
+    }
+</style>
+
+{% endblock %}

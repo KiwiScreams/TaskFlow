@@ -1,0 +1,69 @@
+{% extends "partials/base.html" %}
+
+{% block title %}My Invitations{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <!-- Received Invitations -->
+    <h2 class="mb-4">Pending Invitations Received</h2>
+    {% if received_invites %}
+        <div class="list-group mb-5">
+        {% for invite in received_invites %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>Workspace:</strong> {{ invite.workspace.name }}<br>
+                    <small>Invited on: {{ invite.created_at.strftime('%Y-%m-%d %H:%M') }}</small><br>
+                    <small>Invited by: {{ invite.inviter.email }}</small>
+                </div>
+                <div>
+                    {% if invite.status == 'pending' %}
+                        <a href="{{ url_for('workspace.accept_invite', invite_id=invite.id) }}"
+                           class="btn btn-success btn-sm me-2">
+                           Accept
+                        </a>
+                    {% else %}
+                        <span class="badge
+                            {% if invite.status == 'accepted' %}bg-success
+                            {% elif invite.status == 'declined' %}bg-danger
+                            {% else %}bg-secondary{% endif %}">
+                            {{ invite.status.capitalize() }}
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">You have no pending invitations.</div>
+    {% endif %}
+
+    <!-- Sent Invitations -->
+    <h2 class="mb-4">Invitations Sent</h2>
+    {% if sent_invites %}
+        <div class="list-group">
+        {% for invite in sent_invites %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>Workspace:</strong> {{ invite.workspace.name }}<br>
+                    <small>Invited User:</small> {{ invite.user.email }}<br>
+                    <small>Status:
+                        <span class="badge
+                            {% if invite.status == 'pending' %}bg-warning
+                            {% elif invite.status == 'accepted' %}bg-success
+                            {% elif invite.status == 'declined' %}bg-danger
+                            {% else %}bg-secondary{% endif %}">
+                            {{ invite.status.capitalize() }}
+                        </span>
+                    </small><br>
+                    <small>Sent on: {{ invite.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">You haven't sent any invitations yet.</div>
+    {% endif %}
+
+</div>
+{% endblock %}

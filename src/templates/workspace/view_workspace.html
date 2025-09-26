@@ -1,0 +1,178 @@
+{% extends "partials/base.html" %}
+{% block title %}{{ workspace.name }}{% endblock %}
+
+{% block content %}
+<body class="workspace-bg" style="background: {{ workspace.color }}">
+
+<div class="container p-5">
+    <div class="text-white border rounded-3 shadow-sm mb-5"
+         style="background: rgba(255,255,255,0.2); backdrop-filter: blur(50px); width: 300px; padding: 20px; position: fixed; z-index: 20; right: 0;">
+
+        <details>
+            <summary style="cursor: pointer; font-size: 18px; font-weight: bold; list-style: none;">
+                Members <i class="fa-solid fa-arrow-down"></i>
+            </summary>
+            <ul class="list-unstyled mt-3 p-0">
+                {% for member in members %}
+                <li class="member-item d-flex align-items-center mb-2 p-2 rounded position-relative"
+                    style="background: rgba(0,0,0,0.2);">
+                    <img src="{{ url_for('static', filename='upload/' + member.user.profile_image) }}"
+                         alt="{{ member.user.username }}"
+                         style="width: 35px; height: 35px; border-radius: 50%; margin-right: 10px;">
+                    <div>
+                        <strong>{{ member.user.username }}</strong><br>
+                        <small class="text-light">({{ member.role }})</small>
+                    </div>
+
+                    {% if membership and membership.role == "admin" and member.role == "contributor" %}
+                    <form method="POST"
+                          action="{{ url_for('workspace.remove_member', workspace_id=workspace.id, user_id=member.user.id) }}">
+                        <button type="submit" class="btn btn-sm btn-danger delete-btn" title="Remove Contributor"
+                                style="position: absolute; right: 0; top: 0; bottom: 0;">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </form>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </details>
+
+        {% if membership and membership.role == "admin" %}
+        <a href="{{ url_for('workspace.invite_user', workspace_id=workspace.id) }}"
+           class="btn btn-primary btn-sm mt-3 w-100">
+            + Invite User
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-white">{{ workspace.name }}</h2>
+    </div>
+
+    {% if workspace.statuses|length == 0 %}
+    <div class="text-center p-5 border rounded-3 shadow-sm"
+         style="background: rgba(255,255,255,0.2); backdrop-filter: blur(5px);">
+        <p class="mb-3 text-white fs-5">No statuses yet. Start by creating a status!</p>
+        <a href="{{ url_for('status.manage_statuses', workspace_id=workspace.id) }}"
+           class="btn btn-primary btn-lg">
+            + Create Status
+        </a>
+    </div>
+    {% else %}
+
+    <div class="mb-4 d-flex flex-wrap gap-2">
+        <a href="{{ url_for('workspace.view', workspace_id=workspace.id, status_id='all') }}"
+           class="btn btn-light btn-sm {% if selected_status == 'all' %}active{% endif %}">All</a>
+        {% for status in workspace.statuses %}
+        <a href="{{ url_for('workspace.view', workspace_id=workspace.id, status_id=status.id) }}"
+           class="btn btn-outline-light btn-sm {% if selected_status == status.id|string %}active{% endif %}">
+            {{ status.name }}
+        </a>
+        {% endfor %}
+    </div>
+
+    {% if tasks %}
+    <div class="row g-4">
+        {% for task in tasks %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card task-card h-100 shadow-sm border-0 rounded-3 position-relative">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title">{{ task.title }}</h5>
+
+                        <div class="btn-group">
+                            <a href="{{ url_for('task.edit_task', task_id=task.id) }}"
+                               class="btn btn-sm btn-warning me-1" title="Edit Task">
+                                <i class="fa-solid fa-gear"></i>
+                            </a>
+                            <a href="{{ url_for('task.delete_task', task_id=task.id) }}"
+                               class="btn btn-sm btn-danger" title="Delete Task">
+                                <i class="fa-solid fa-delete-left"></i>
+                            </a>
+                        </div>
+
+                    </div>
+                    <p class="card-text text-muted">{{ task.description or "No description" }}</p>
+                    <span class="badge bg-info text-dark">{{ task.status.name }}</span>
+                    <div class="assigned-users mt-2">
+                            {% for user in task.users %}
+                            <img src="{{ url_for('static', filename='upload/' + user.profile_image) }}"
+                                 title="{{ user.username }}"
+                                 style="width: 30px; height: 30px; border-radius: 50%; margin-right: 5px;">
+                            {% endfor %}
+                        </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center p-5 border rounded-3 shadow-sm"
+         style="background: rgba(255,255,255,0.2); backdrop-filter: blur(5px);">
+        <p class="mb-3 text-white fs-5">No tasks found for this status!</p>
+    </div>
+    {% endif %}
+
+    <a href="{{ url_for('status.manage_statuses', workspace_id=workspace.id) }}"
+       class="btn btn-primary btn-lg shadow"
+       style="position: fixed; bottom: 20px; right: 20px; z-index: 1050;">
+        + Status
+    </a>
+    <a href="{{ url_for('task.create_task') }}?workspace_id={{ workspace.id }}"
+       class="btn btn-primary btn-lg shadow"
+       style="position: fixed; bottom: 80px; right: 20px; z-index: 1050;">
+        + Task
+    </a>
+    {% endif %}
+</div>
+</body>
+{% endblock %}
+
+<style>
+    body.workspace-bg {
+        background-color: {{ workspace.color }};
+        min-height: 100vh;
+    }
+
+    .task-card {
+        backdrop-filter: blur(6px);
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .task-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+    }
+
+    .card-footer {
+        background: transparent;
+        border-top: none;
+    }
+
+    .btn-primary, .btn-secondary {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .status-filter.active {
+        font-weight: bold;
+        border: 2px solid white;
+    }
+
+    .member-item .delete-btn {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+
+    .member-item:hover .delete-btn {
+        opacity: 1;
+    }
+</style>
